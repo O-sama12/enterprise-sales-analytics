@@ -1,54 +1,38 @@
 CREATE TABLE regions (
-    region_id INT AUTO_INCREMENT PRIMARY KEY,
-    region_name VARCHAR(100) NOT NULL UNIQUE
+    region_id INT PRIMARY KEY AUTO_INCREMENT,
+    region_name VARCHAR(100) UNIQUE NOT NULL
 );
 
 CREATE TABLE customers (
-    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT PRIMARY KEY AUTO_INCREMENT,
     customer_name VARCHAR(150) NOT NULL,
-    email VARCHAR(150) UNIQUE,
-    region_id INT NOT NULL,
+    email VARCHAR(150),
+    region_id INT,
 
-    CONSTRAINT fk_customer_region
-        FOREIGN KEY (region_id)
-        REFERENCES regions(region_id)
-        ON DELETE RESTRICT
+    FOREIGN KEY (region_id) REFERENCES regions(region_id)
 );
 
 CREATE TABLE products (
-    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT PRIMARY KEY AUTO_INCREMENT,
     product_name VARCHAR(150) NOT NULL,
-    price DECIMAL(10,2) NOT NULL CHECK (price >= 0)
+    price DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE orders (
-    order_id INT AUTO_INCREMENT PRIMARY KEY,
-    customer_id INT NOT NULL,
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_order_customer
-        FOREIGN KEY (customer_id)
-        REFERENCES customers(customer_id)
-        ON DELETE CASCADE
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
 
 CREATE TABLE order_items (
-    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT NOT NULL CHECK (quantity > 0),
-    discount DECIMAL(5,2) DEFAULT 0 CHECK (discount >= 0),
+    order_item_id INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT,
+    product_id INT,
+    quantity INT NOT NULL,
+    discount DECIMAL(5,2) DEFAULT 0,
 
-    CONSTRAINT fk_item_order
-        FOREIGN KEY (order_id)
-        REFERENCES orders(order_id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_item_product
-        FOREIGN KEY (product_id)
-        REFERENCES products(product_id)
-        ON DELETE RESTRICT,
-
-    CONSTRAINT uq_order_product
-        UNIQUE (order_id, product_id)
-); 
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
