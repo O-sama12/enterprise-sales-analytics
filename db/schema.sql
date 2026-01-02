@@ -36,3 +36,6 @@ CREATE TABLE order_items (
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 ); 
+ALTER TABLE ORDERS   
+ADD COLUMN STATUS VARCHAR(25); 
+describe orders;
