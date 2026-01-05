@@ -42,3 +42,28 @@ class AnalyticsService:
         cursor.close()
         conn.close()
         return results
+    @staticmethod
+    def get_top_products(limit=5):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        query = """
+        SELECT
+        p.product_name,
+        SUM(oi.quantity) AS total_quantity_sold,
+        ROUND(SUM(oi.quantity * p.price * (1 - oi.discount)), 2) AS revenue
+        FROM order_items oi
+        JOIN products p ON oi.product_id = p.product_id
+        GROUP BY p.product_id, p.product_name
+        ORDER BY total_quantity_sold DESC
+        LIMIT %s
+        """
+
+        cursor.execute(query, (limit,))
+        results = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return results
+
